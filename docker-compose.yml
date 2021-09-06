@@ -1,0 +1,27 @@
+version: '3.1'
+services:
+  api:
+    image: 'vending-machine-api.jar'
+    ports:
+      - "8080:8080"
+    depends_on:
+      - "postgres_sql"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_sql:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+  postgres_sql:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5

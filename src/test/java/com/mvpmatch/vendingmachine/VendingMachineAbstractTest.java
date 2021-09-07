@@ -1,5 +1,7 @@
 package com.mvpmatch.vendingmachine;
 
+import org.junit.After;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
@@ -9,6 +11,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.TestPropertySourceUtils;
 import org.testcontainers.containers.PostgreSQLContainer;
+
+import javax.persistence.EntityManager;
 
 
 @ActiveProfiles("test")
@@ -34,4 +38,5 @@ public class VendingMachineAbstractTest extends PostgreSQLContainer<VendingMachi
             ).applyTo(applicationContext.getEnvironment());
         }
     }
+
 }

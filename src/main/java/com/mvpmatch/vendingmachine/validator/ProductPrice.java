@@ -4,13 +4,14 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
+
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = UniqueUsernameValidator.class)
+@Constraint(validatedBy = ProductPriceValidator.class)
 @Documented
-public @interface UniqueUsername {
+public @interface ProductPrice {
 
-    String message() default "Username already exists";
+    String message() default "Invalid price";
 
     Class<?>[] groups() default {};
 

@@ -22,4 +22,12 @@ public class RequestBuilderHelper {
                 .content(jsonUtils.toJson(body));
     }
 
+    public MockHttpServletRequestBuilder putRequest(String apiEndpoint, Object body)
+            throws JsonProcessingException {
+        return MockMvcRequestBuilders
+                .put(apiEndpoint)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonUtils.toJson(body));
+    }
+
 }

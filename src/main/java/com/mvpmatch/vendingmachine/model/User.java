@@ -2,6 +2,7 @@ package com.mvpmatch.vendingmachine.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.Where;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @Data
 @Table(name="users")
 @EqualsAndHashCode(callSuper = true)
+@Where(clause = "deleted = false")
 public class User extends BaseEntity implements UserDetails {
 
     public static final String BUYER = "BUYER";
@@ -21,7 +23,8 @@ public class User extends BaseEntity implements UserDetails {
     public static final List<String> ROLES = List.of(BUYER, SELLER);
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_generator")
+    @SequenceGenerator(name="user_generator", sequenceName = "users_seq_id", allocationSize=1)
     private Integer id;
 
     @Column(nullable = false, unique = true)
@@ -43,17 +46,17 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override

@@ -1,16 +1,20 @@
 package com.mvpmatch.vendingmachine.validator;
 
+import com.mvpmatch.vendingmachine.model.BaseEntity;
+import com.mvpmatch.vendingmachine.model.Product;
+
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
-@Target({ElementType.FIELD})
-@Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = UniqueUsernameValidator.class)
-@Documented
-public @interface UniqueUsername {
 
-    String message() default "Username already exists";
+@Target({ElementType.PARAMETER})
+@Retention(RetentionPolicy.RUNTIME)
+@Constraint(validatedBy = ProductEntityIdValidator.class)
+@Documented
+public @interface ProductEntityId {
+
+    String message() default "Product doesn't exist";
 
     Class<?>[] groups() default {};
 

@@ -52,6 +52,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             return Optional.empty();
         }
 
-        return Optional.of(userRepository.getById(Integer.valueOf(jwtTokenUtil.getUserId(token))));
+        return Optional.ofNullable(userRepository.findByUsername(jwtTokenUtil.getUsername(token)));
     }
 }

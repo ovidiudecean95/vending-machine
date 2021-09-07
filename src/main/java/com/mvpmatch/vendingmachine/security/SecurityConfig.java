@@ -1,15 +1,19 @@
 package com.mvpmatch.vendingmachine.security;
 
 
+import com.mvpmatch.vendingmachine.model.User;
 import com.mvpmatch.vendingmachine.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,7 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import javax.servlet.http.HttpServletResponse;
 
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -70,7 +74,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // Our public endpoints
                 .antMatchers("/api/login/**").permitAll()
                 .antMatchers("/api/register/**").permitAll()
-                // Our private endpoints
+                // products endpoints
+                .antMatchers(HttpMethod.POST, "/api/products").hasRole(User.SELLER)
+                .antMatchers(HttpMethod.PUT, "/api/products/**").hasRole(User.SELLER)
+                .antMatchers(HttpMethod.DELETE, "/api/products/**").hasRole(User.SELLER)
+
                 .anyRequest().authenticated();
 
         // Add JWT token filter

@@ -2,6 +2,7 @@ package com.mvpmatch.vendingmachine.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
@@ -9,10 +10,12 @@ import javax.persistence.*;
 @Data
 @Table(name="products")
 @EqualsAndHashCode(callSuper = true)
+@Where(clause = "deleted = false")
 public class Product extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_generator")
+    @SequenceGenerator(name="product_generator", sequenceName = "products_seq_id", allocationSize=1)
     private Integer id;
 
     @Column(nullable = false)

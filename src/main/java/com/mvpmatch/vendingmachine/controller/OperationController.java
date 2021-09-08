@@ -1,7 +1,9 @@
 package com.mvpmatch.vendingmachine.controller;
 
 
+import com.mvpmatch.vendingmachine.dto.BuyProductsRequest;
 import com.mvpmatch.vendingmachine.dto.DepositCoinRequest;
+import com.mvpmatch.vendingmachine.dto.view.BuyView;
 import com.mvpmatch.vendingmachine.dto.view.CoinsView;
 import com.mvpmatch.vendingmachine.dto.view.UserView;
 import com.mvpmatch.vendingmachine.service.OperationService;
@@ -29,6 +31,11 @@ public class OperationController {
     @PostMapping("/deposit")
     public UserView deposit(@RequestBody @Valid DepositCoinRequest depositCoinRequest) {
         return operationService.deposit(depositCoinRequest);
+    }
+
+    @PostMapping("/buy")
+    public BuyView buy(@RequestBody @Valid BuyProductsRequest buyProductsRequest) {
+        return operationService.buyProducts(buyProductsRequest);
     }
 
 }

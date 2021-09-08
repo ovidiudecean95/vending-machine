@@ -1,4 +1,4 @@
-package com.mvpmatch.vendingmachine.validator;
+package com.mvpmatch.vendingmachine.validator.product;
 
 import com.mvpmatch.vendingmachine.model.Product;
 import com.mvpmatch.vendingmachine.repository.ProductRepository;

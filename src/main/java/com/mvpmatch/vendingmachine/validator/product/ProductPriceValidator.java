@@ -1,4 +1,4 @@
-package com.mvpmatch.vendingmachine.validator;
+package com.mvpmatch.vendingmachine.validator.product;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

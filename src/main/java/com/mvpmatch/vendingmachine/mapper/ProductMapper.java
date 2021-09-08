@@ -1,8 +1,10 @@
 package com.mvpmatch.vendingmachine.mapper;
 
+import com.mvpmatch.vendingmachine.dto.BuyProductsRequest;
 import com.mvpmatch.vendingmachine.dto.CreateUserRequest;
 import com.mvpmatch.vendingmachine.dto.ProductRequest;
 import com.mvpmatch.vendingmachine.dto.UpdateUserRequest;
+import com.mvpmatch.vendingmachine.dto.view.BoughtProductView;
 import com.mvpmatch.vendingmachine.dto.view.ProductView;
 import com.mvpmatch.vendingmachine.model.Product;
 import com.mvpmatch.vendingmachine.model.User;
@@ -27,5 +29,11 @@ public abstract class ProductMapper {
 
     @BeanMapping(nullValueCheckStrategy = ALWAYS, nullValuePropertyMappingStrategy = IGNORE)
     public abstract void update(ProductRequest request, @MappingTarget Product user);
+
+    @Mapping(source = "product.id", target = "id")
+    @Mapping(source = "product.productName", target = "name")
+    @Mapping(source = "product.cost", target = "cost")
+    @Mapping(source = "productsRequest.amount", target = "boughtAmount")
+    public abstract BoughtProductView from(Product product, BuyProductsRequest productsRequest);
 
 }

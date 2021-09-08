@@ -1,7 +1,4 @@
-package com.mvpmatch.vendingmachine.validator;
-
-import com.mvpmatch.vendingmachine.model.BaseEntity;
-import com.mvpmatch.vendingmachine.model.Product;
+package com.mvpmatch.vendingmachine.validator.product;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

@@ -4,7 +4,6 @@ import com.mvpmatch.vendingmachine.VendingMachineAbstractTest;
 import com.mvpmatch.vendingmachine.dto.view.CoinView;
 import com.mvpmatch.vendingmachine.model.CoinInventory;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ValidationException;
@@ -13,14 +12,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class OperationServiceTest extends VendingMachineAbstractTest {
+public class ChangeServiceTest extends VendingMachineAbstractTest {
 
     @Autowired
-    private OperationService operationService;
+    private ChangeService changeService;
 
     @Test
     public void testGetAmount_ReturnOneCoin() {
-        List<CoinView> coinViews = operationService.getAmountInCoins(100, List.of(
+        List<CoinView> coinViews = changeService.getAmountInCoins(100, List.of(
                 CoinInventory.builder().coinValue(100).amount(1).build()
         ));
 
@@ -31,7 +30,7 @@ public class OperationServiceTest extends VendingMachineAbstractTest {
 
     @Test
     public void testGetAmount_ReturnTwoCoins() {
-        List<CoinView> coinViews = operationService.getAmountInCoins(100, List.of(
+        List<CoinView> coinViews = changeService.getAmountInCoins(100, List.of(
                 CoinInventory.builder().coinValue(50).amount(4).build()
         ));
 
@@ -42,7 +41,7 @@ public class OperationServiceTest extends VendingMachineAbstractTest {
 
     @Test
     public void testGetAmount_ReturnMultipleCoins() {
-        List<CoinView> coinViews = operationService.getAmountInCoins(30, List.of(
+        List<CoinView> coinViews = changeService.getAmountInCoins(30, List.of(
                 CoinInventory.builder().coinValue(10).amount(2).build(),
                 CoinInventory.builder().coinValue(5).amount(10).build()
         ));
@@ -57,7 +56,7 @@ public class OperationServiceTest extends VendingMachineAbstractTest {
     @Test()
     public void testGetAmount_ThrowsValidationException() {
         assertThrows(ValidationException.class, () -> {
-            operationService.getAmountInCoins(50, List.of(
+            changeService.getAmountInCoins(50, List.of(
                     CoinInventory.builder().coinValue(10).amount(2).build()
             ));
         });

@@ -1,8 +1,6 @@
 package com.mvpmatch.vendingmachine.exceptions;
 
-import com.mvpmatch.vendingmachine.validator.ProductEntityId;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -38,8 +33,12 @@ public class GlobalExceptionsHandler extends ResponseEntityExceptionHandler {
                 .stream()
                 .collect(Collectors.toMap(
                         FieldError::getField,
-                        DefaultMessageSourceResolvable::getDefaultMessage,
+                        FieldError::getDefaultMessage,
                         (s1, s2) -> s1));
+
+        if (errors.size() == 0) {
+            errors.put("exception", ex.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+        }
 
         body.put("errors", errors);
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);

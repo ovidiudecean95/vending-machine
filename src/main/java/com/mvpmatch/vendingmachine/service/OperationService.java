@@ -1,13 +1,15 @@
 package com.mvpmatch.vendingmachine.service;
 
+import com.mvpmatch.vendingmachine.dto.BuyProductsRequest;
 import com.mvpmatch.vendingmachine.dto.DepositCoinRequest;
-import com.mvpmatch.vendingmachine.dto.view.CoinView;
-import com.mvpmatch.vendingmachine.dto.view.CoinsView;
-import com.mvpmatch.vendingmachine.dto.view.UserView;
+import com.mvpmatch.vendingmachine.dto.view.*;
+import com.mvpmatch.vendingmachine.mapper.ProductMapper;
 import com.mvpmatch.vendingmachine.mapper.UserMapper;
 import com.mvpmatch.vendingmachine.model.CoinInventory;
+import com.mvpmatch.vendingmachine.model.Product;
 import com.mvpmatch.vendingmachine.model.User;
 import com.mvpmatch.vendingmachine.repository.CoinInventoryRepository;
+import com.mvpmatch.vendingmachine.repository.ProductRepository;
 import com.mvpmatch.vendingmachine.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,27 +33,26 @@ public class OperationService {
     private UserMapper userMapper;
 
     @Autowired
+    private ProductMapper productMapper;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
     private CoinInventoryRepository coinInventoryRepository;
+
+    @Autowired
+    private ChangeService changeService;
 
     @Transactional
     public CoinsView resetDeposit() {
         User user = userAuth.getUser();
         List<CoinInventory> coinsInventory = coinInventoryRepository.findAll();
-        List<CoinView> returnedCoins = getAmountInCoins(user.getDeposit(), coinsInventory);
-
-        coinsInventory.forEach(
-            coin -> {
-                Optional<CoinView> withdrawCoin = returnedCoins.stream()
-                        .filter(coinView -> coinView.getValue().equals(coin.getCoinValue())).findFirst();
-                if (withdrawCoin.isPresent()) {
-                    coin.setAmount(coin.getAmount() - withdrawCoin.get().getAmount());
-                    coinInventoryRepository.save(coin);
-                }
-            }
-        );
+        List<CoinView> returnedCoins = changeService.getAmountInCoins(user.getDeposit(), coinsInventory);
+        updateCoinInventoryAfterWithdraw(returnedCoins, coinsInventory);
 
         user.setDeposit(0);
         userRepository.save(user);
@@ -60,36 +60,18 @@ public class OperationService {
         return new CoinsView(returnedCoins);
     }
 
-    public List<CoinView> getAmountInCoins(Integer amount, List<CoinInventory> coinInventory) {
-        AtomicInteger amountAtomic = new AtomicInteger(amount);
-        Map<Integer, Integer> coinInventoryByValue = coinInventory.stream()
-                .collect(Collectors.toMap(CoinInventory::getCoinValue, CoinInventory::getAmount));
-        List<CoinView> coinsResult = new ArrayList<>();
-
-        CoinInventory.VALID_COINS.stream().sorted((c1, c2) -> c2 - c1).forEach(
-            coinValue -> {
-                CoinView coinView = CoinView.builder().value(coinValue).amount(0).build();
-
-                while (amountAtomic.get() >= coinValue &&
-                        coinInventoryByValue.containsKey(coinValue) && coinInventoryByValue.get(coinValue) > 0) {
-                    amountAtomic.addAndGet(-coinValue);
-                    coinInventoryByValue.put(coinValue, coinInventoryByValue.get(coinValue) - 1);
-                    coinView.incrementAmount();
+    public void updateCoinInventoryAfterWithdraw(List<CoinView> withdrawCoins, List<CoinInventory> coinsInventory) {
+        coinsInventory.forEach(
+                coin -> {
+                    Optional<CoinView> withdrawCoin = withdrawCoins.stream()
+                            .filter(coinView -> coinView.getValue().equals(coin.getCoinValue())).findFirst();
+                    if (withdrawCoin.isPresent()) {
+                        coin.setAmount(coin.getAmount() - withdrawCoin.get().getAmount());
+                        coinInventoryRepository.save(coin);
+                    }
                 }
-
-                if (coinView.getAmount() > 0) {
-                    coinsResult.add(coinView);
-                }
-            }
         );
-
-        if (amountAtomic.get() != 0) {
-            throw new ValidationException("Insufficient coins");
-        }
-
-        return coinsResult;
     }
-
 
     @Transactional
     public UserView deposit(DepositCoinRequest depositCoinRequest) {
@@ -107,5 +89,24 @@ public class OperationService {
         coinInventoryRepository.save(coinInventory);
 
         return userMapper.userToUserView(user);
+    }
+
+    @Transactional
+    public BuyView buyProducts(BuyProductsRequest buyProductsRequest) {
+        User currentUser = userAuth.getUser();
+        Product product = productRepository.getById(buyProductsRequest.getProductId());
+        Integer spent = product.getCost() * buyProductsRequest.getAmount();
+
+        List<CoinView> changeCoins = changeService.getAmountInCoins(
+                currentUser.getDeposit() - spent, coinInventoryRepository.findAll());
+        updateCoinInventoryAfterWithdraw(changeCoins, coinInventoryRepository.findAll());
+
+        currentUser.setDeposit(0);
+        userRepository.save(currentUser);
+
+        product.setAmountAvailable(product.getAmountAvailable() - buyProductsRequest.getAmount());
+        productRepository.save(product);
+
+        return new BuyView(spent, changeCoins, productMapper.from(product, buyProductsRequest));
     }
 }

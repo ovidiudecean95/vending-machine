@@ -163,7 +163,7 @@ public class ProductControllerTest extends VendingMachineAbstractTest {
                 .andReturn();
 
         List<ProductView> productViews = jsonUtils.fromJson(requestResult.getResponse().getContentAsString(), List.class);
-        assertEquals(5, productViews.size());
+        assertEquals(6, productViews.size());
     }
 
     @Test

@@ -1,6 +1,6 @@
 package com.mvpmatch.vendingmachine.dto;
 
-import com.mvpmatch.vendingmachine.validator.ProductPrice;
+import com.mvpmatch.vendingmachine.validator.product.ProductPrice;
 import lombok.Builder;
 import lombok.Data;
 

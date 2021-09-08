@@ -28,7 +28,7 @@ public class UserController {
     }
 
     @DeleteMapping("/current")
-    public ResponseEntity deleteCurrentUser() {
+    public ResponseEntity<Object> deleteCurrentUser() {
         userService.deleteAuthenticatedUser();
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

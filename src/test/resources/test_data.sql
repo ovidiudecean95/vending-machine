@@ -21,7 +21,8 @@ values
     (3, 5, 100, 'product3', 2, false),
     (4, 1, 15, 'product4', 3, false),
     (5, 10, 30, 'product5', 3, false),
-    (6, 1, 50, 'product6', 3, true);
+    (6, 1, 50, 'product6', 3, true),
+    (7, 1, 5, 'product6', 3, false);
 
 insert into
     coin_inventory(id, coin_value, amount)

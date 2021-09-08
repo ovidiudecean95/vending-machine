@@ -78,6 +78,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/products").hasRole(User.SELLER)
                 .antMatchers(HttpMethod.PUT, "/api/products/**").hasRole(User.SELLER)
                 .antMatchers(HttpMethod.DELETE, "/api/products/**").hasRole(User.SELLER)
+                // operation endpoints
+                .antMatchers(HttpMethod.GET, "/api/reset").hasRole(User.BUYER)
+                .antMatchers(HttpMethod.POST, "/api/deposit").hasRole(User.BUYER)
+                .antMatchers(HttpMethod.POST, "/api/buy").hasRole(User.BUYER)
 
                 .anyRequest().authenticated();
 

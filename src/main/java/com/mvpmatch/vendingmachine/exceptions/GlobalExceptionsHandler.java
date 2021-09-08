@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import javax.validation.ValidationException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +57,15 @@ public class GlobalExceptionsHandler extends ResponseEntityExceptionHandler {
 
         body.put("errors", errors);
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<Object> handleValidationException(HttpServletRequest request, ValidationException ex) {
+        Map<String, Map<String, String>> body = new HashMap<>();
+        Map<String, String> errors = new HashMap<>();
+        errors.put("exception", ex.getMessage());
+        body.put("errors", errors);
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
 }

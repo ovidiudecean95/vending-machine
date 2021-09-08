@@ -8,7 +8,10 @@ insert into
 values
     (1, 'buyer_account', '$2a$10$HTuWzf2h6QrRWnqmNhgzdeQP0IKxHGe8S32Ki75xz4/A0xsovsaSa', 0, 'ROLE_BUYER', false),
     (2, 'seller_account', '$2a$10$mW2WIeoWgjhyEFwOJTHgKedwMGhqk4O3YkTTE5ybQQ36IWoIlEpOS', 0, 'ROLE_SELLER', false),
-    (3, 'seller_account_2', '$2a$10$mW2WIeoWgjhyEFwOJTHgKedwMGhqk4O3YkTTE5ybQQ36IWoIlEpOS', 0, 'ROLE_SELLER', false);
+    (3, 'seller_account_2', '$2a$10$mW2WIeoWgjhyEFwOJTHgKedwMGhqk4O3YkTTE5ybQQ36IWoIlEpOS', 0, 'ROLE_SELLER', false),
+    (4, 'buyer_account_20', '$2a$10$HTuWzf2h6QrRWnqmNhgzdeQP0IKxHGe8S32Ki75xz4/A0xsovsaSa', 20, 'ROLE_BUYER', false),
+    (5, 'buyer_account_50', '$2a$10$HTuWzf2h6QrRWnqmNhgzdeQP0IKxHGe8S32Ki75xz4/A0xsovsaSa', 50, 'ROLE_BUYER', false);
+
 
 insert into
     products (id, amount_available, cost, product_name, seller_id, deleted)
@@ -24,4 +27,4 @@ insert into
     coin_inventory(id, coin_value, amount)
 values
     (1, 5, 2),
-    (2, 10, 2);
+    (2, 10, 3);
